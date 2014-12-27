@@ -1,0 +1,126 @@
+#afpfwrap {
+    width: 900px;
+}
+
+#afpf-admin {
+    width: 100%;
+}
+
+#afpf-admin form {
+    position: relative;
+    min-height: 480px;
+}
+
+#afpf-form-table {
+    width: 65%;
+    clear: none;
+    float: left;
+}
+
+#afpf-box-group {
+    position: relative;
+    float: right;
+    width: 30%
+}
+
+#afpf-box-group > :first-child {
+    margin-bottom: 2em;
+}
+
+.afpf-box {
+    position: relative;
+    float: left;
+    width: 100%;
+    background: #ffffff;
+    padding: 0 1em;
+    border: 1px solid rgb(223, 223, 223);
+    list-style: none;
+}
+
+.afpf-box .inside {
+    min-height: 42px;
+    max-height: 200px;
+    overflow: auto;
+    border: 1px solid #dfdfdf;
+    background-color: #fdfdfd;
+    padding: 0em 12px .9em;
+    margin-bottom: 1em;
+}
+
+#afpf-schedule input[type="checkbox"] {
+    float: right; 
+}
+
+#post-categories .handlediv:before {
+  content:'\f142';
+  font: 400 20px/1 dashicons;  
+}
+
+.afpf-box.closed .closable {
+    display: none;
+}  
+
+#post-categories.closed .handlediv:before {
+    content:'\f140';
+}
+
+#post-categories .handlediv {
+color:#aaa;
+float: right;
+width: 20px;
+}
+
+#post-categories .handlediv:hover {
+color:#777;
+}
+
+#post-categories .closable {
+    margin-bottom: 1em;
+}
+
+#post-categories #category-adder {
+    margin-bottom: 2em;
+}
+
+#afpf-schedule .inside {
+   padding-top: 1em;
+}
+
+#post-categories .category-add input[type=text], #post-categories .category-add select {
+    margin: 0 0 1em;
+}
+
+#afpf-submit {
+    position: absolute;
+    width: 65%;
+    bottom: 2em;
+}
+
+#afpf-submit .button-primary {
+    position: relative;
+    margin: 0px 8%;
+}
+
+
+@media screen and (max-width: 782px) {
+    #afpf-box-group {
+        width  : 65%;
+        float: left;
+    }
+    #afpf-box-group > :first-child {
+        margin-right: 2em;
+    }
+    
+    .afpf-box {
+        width: 42%;
+        margin: auto;
+    }
+    
+    #afpf-submit {
+        position: relative
+    }
+    
+    #afpf-submit .button-primary {
+        margin-top: 2em;
+    }
+}
