@@ -56,6 +56,8 @@ class AFP_Feeder_widget extends WP_Widget {
 		$afpfw_total_pages = ceil( wp_count_posts( 'afpfeed' )->publish / $this->max_per_page );
 		
 		wp_enqueue_style( 'afpfw-script', AFP_FEEDER_URL . '/includes/afp-feeder-widget-style.css');
+		
+		$afpfw_nav = __('+ TOUTES LES D&Eactue;P&Ecirc;CHES', 'afp-feeder');
 				
 		if ( 'ajax' === $this->nav_mode ) {
 			wp_enqueue_script( 'afpfw-script', AFP_FEEDER_URL . '/includes/afp-feeder-widget-script.js', array(), 1.0, true );
@@ -64,17 +66,19 @@ class AFP_Feeder_widget extends WP_Widget {
 				'afpfw_total_pages'		=> $afpfw_total_pages,
 				'ajaxurl'				=> admin_url('admin-ajax.php'),
 				) );
+			$afpfw_nav = __('+ LES D&Eactue;P&Ecirc;CHES PR&Eactue;C&Eactue;DENTES', 'afp-feeder');
 		}
 		?>
 		<div id="afpfw-container" class="afpfw-container">
-			<p>Le direct AFP</p>
+			<p>Le direct <img src='' alt='AFP' /></p>
 			<div id="afpfw-content" class="afpfw-content" <?php echo $afpf_content_height?>>
 				<?php $this->afpfw_get_page(); ?>
 			</div>
-			<a href=<?php echo get_post_type_archive_link( 'afpfeed' ); ?> id="afpfw-more" class="afpfw-nav" value="1">
-					<img alt="&or;" border="0"/>
-			</a>
+
 		</div>
+		<a href=<?php echo get_post_type_archive_link( 'afpfeed' ); ?> id="afpfw-more" class="afpfw-nav" value="1">
+				<?php _e('+ TOUTES LES D&Eacute;P&Ecirc;CHES') ?>
+		</a>
 
 		<?php
 	}

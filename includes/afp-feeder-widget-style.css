@@ -1,16 +1,11 @@
 .afpfw-container {
     position: relative; 
-    border: 1px solid #ccc;
 }
 
 .afpfw-content{
-    width: 100%;
     overflow: auto;
 }
 
 .afpfw-nav {
     position: absolute;
-    bottom: 0;
-    background: #fff;
-    width:100%;
 }

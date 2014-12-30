@@ -250,13 +250,15 @@ if ( class_exists( 'WP_Importer' ) ) {
 				foreach ( $body as $paragraph ) {
 					$post_content .= wp_strip_all_tags( $paragraph, true ) . '<br />';
 				}
-				$tags_input = explode( '-', $tags );
-
-				$tag_index = 0;
-				foreach ( $tags_input as $tag ) {
-					$tags_input[$tag_index] = wp_strip_all_tags( $tag, true );
-					$tag_index++;
-				}
+				
+				$tags_input = array(); // TLB NO TAG
+//				$tags_input = explode( '-', $tags );
+//
+//				$tag_index = 0;
+//				foreach ( $tags_input as $tag ) {
+//					$tags_input[$tag_index] = wp_strip_all_tags( $tag, true );
+//					$tag_index++;
+//				}
 
 				$post_author = $this->post_author;
 				$categories = $this->categories;

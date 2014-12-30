@@ -48,34 +48,34 @@ class AFP_Feeder_admin {
 		
 		$urlparam = array();
 
-		extract( $_POST );
+		$p = $_POST;
 		
-		if ( empty ( $afpf_base_path ) or empty( $user ) or empty( $afpf_status ) or empty( $afpf_comments ) ) {
-			$msg = empty ( $afpf_base_path) ? "Veuillez renseigner un chemin d'acc&egrave;s."  : 'Une erreur est intervenue. Veuillez v&eacute;rifier vos r&eacute;glages.';
+		if ( empty ( $p['afpf_base_path'] ) or empty( $p['user'] ) or empty( $p['afpf_status'] ) or empty( $p['afpf_comments'] ) ) {
+			$msg = empty ( $p['afpf_base_path'] ) ? "Veuillez renseigner un chemin d'acc&egrave;s."  : 'Une erreur est intervenue. Veuillez v&eacute;rifier vos r&eacute;glages.';
 			$msgtype = 'error';
 			$updated = 'false';
 		} else {
 			$options = array(
-				'author'	=> wp_strip_all_tags( $user ),
-				'base_path'	=> wp_strip_all_tags( $afpf_base_path ),
-				'status'	=> wp_strip_all_tags( $afpf_status ),
-				'comments'	=> wp_strip_all_tags( $afpf_comments ),
+				'author'	=> wp_strip_all_tags( $p['user'] ),
+				'base_path'	=> wp_strip_all_tags( $p['afpf_base_path'] ),
+				'status'	=> wp_strip_all_tags( $p['afpf_status'] ),
+				'comments'	=> wp_strip_all_tags( $p['afpf_comments'] ),
 				'scheduled'	=> '',
 				'recur'		=> '',
 				'lastimport'=> $this->afp_feeder->get_last_imported() ? $this->afp_feeder->get_last_imported() : '',
 			);
 			
-			$options['cats'] = ( isset( $post_category ) ) ? wp_strip_all_tags( implode( ',', $post_category ) ) : '' ;
+			$options['cats'] = ( isset( $p['post_category'] ) ) ? wp_strip_all_tags( implode( ',', $p['post_category'] ) ) : '' ;
 			
-			if ( isset( $afpf_scheduled ) ) {
-				$options['scheduled'] = wp_strip_all_tags( $afpf_scheduled ) ;
-				if ( !empty( $afpf_recur ) ) {
-					$options['recur'] = $afpf_recur;
-					if ( wp_get_schedule( 'afpimport' )  && wp_get_schedule( 'afpimport' ) !== $afpf_recur ) {
+			if ( isset( $p['afpf_scheduled'] ) ) {
+				$options['scheduled'] = wp_strip_all_tags( $p['afpf_scheduled'] ) ;
+				if ( !empty( $p['afpf_recur'] ) ) {
+					$options['recur'] = $p['afpf_recur'];
+					if ( wp_get_schedule( 'afpimport' )  && wp_get_schedule( 'afpimport' ) !== $p['afpf_recur'] ) {
 						wp_clear_scheduled_hook( 'afpimport' );
-						wp_schedule_event( time() + ( get_option( 'gmt_offset' ) * 3600 ), $afpf_recur, 'afpimport' );
+						wp_schedule_event( time() + ( get_option( 'gmt_offset' ) * 3600 ), $p['afpf_recur'], 'afpimport' );
 					} elseif ( !wp_get_schedule( 'afpimport' ) ) {
-						wp_schedule_event( time() + ( get_option( 'gmt_offset' ) * 3600 ), $afpf_recur, 'afpimport' );
+						wp_schedule_event( time() + ( get_option( 'gmt_offset' ) * 3600 ), $p['afpf_recur'], 'afpimport' );
 					}
 				} 
 			} else {
@@ -91,7 +91,7 @@ class AFP_Feeder_admin {
 			update_option('afpf_general_settings', $options);
 		}
 		
-		if ( isset( $submitandimport ) && 'true' === $updated ) {
+		if ( isset( $p['submitandimport'] ) && 'true' === $updated ) {
 			$urlparam['imported'] = 'true';
 			$this->afp_feeder->get_saved_options();
 			$result = $this->afp_feeder->import();
@@ -106,7 +106,7 @@ class AFP_Feeder_admin {
 		set_transient('settings_error', get_settings_errors('afpf_general_settings'), MINUTE_IN_SECONDS);
 		set_transient('afpf_report', get_settings_errors('afpf_report'), MINUTE_IN_SECONDS);
 		
-		$url = add_query_arg( $urlparam, urldecode( $_POST['_wp_http_referer'] ) );
+		$url = add_query_arg( $urlparam, urldecode( $p['_wp_http_referer'] ) );
 		wp_safe_redirect( $url );
 		exit;
 	}
