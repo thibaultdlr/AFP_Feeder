@@ -28,15 +28,17 @@ class AFP_Feeder_widget extends WP_Widget {
 			'paged'			=> $afpfw_paged,
 		);
 		$afpf_query = new WP_Query( $params ); ?>
-		<div id="afpfw_page_<?php echo $afpfw_paged ?>" class="afpfw_page">
+		<ul class="list-afp">
 		<?php if ( $afpf_query->have_posts() ) : ?>
 				<?php while ( $afpf_query->have_posts() ) : ?>
 					<?php $afpf_query->the_post(); ?>
-					<div class="afp-hour"><?php the_time( 'H:i') ?></div>
-					<div class="afp-title" id="<?php the_ID() ?>"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title() ?></a></div>
+					<li class="list-afp__item">
+						<a href="<?php the_permalink() ?>" class="text-13 c-black"><strong><?php the_time( 'H:i') ?></strong>
+						<?php the_title() ?></a>
+					</li>
 				<?php endwhile; ?>
 			<?php endif; ?>
-		</div>
+		</ul>
 		<?php if (isset($_GET['afpfw_ajax'])) {
 			die();
 		}
@@ -49,7 +51,6 @@ class AFP_Feeder_widget extends WP_Widget {
 	 * @param type $instance
 	 */
 	public function widget( $args, $instance ) {
-		$afpf_content_height = isset($instance['afpf_content_height']) ? 'style="height: ' . $instance['afpf_content_height'] . ';"'  : '';
 		
 		$this->max_per_page = isset($instance['afpf_per_page']) ? $instance['afpf_per_page'] : 7;
 		$this->nav_mode = isset($instance['afpf_nav_mode']) ? $instance['afpf_nav_mode'] : 'archives';
@@ -66,19 +67,16 @@ class AFP_Feeder_widget extends WP_Widget {
 				'afpfw_total_pages'		=> $afpfw_total_pages,
 				'ajaxurl'				=> admin_url('admin-ajax.php'),
 				) );
-			$afpfw_nav = __('+ LES D&Eactue;P&Ecirc;CHES PR&Eactue;C&Eactue;DENTES', 'afp-feeder');
+			$afpfw_nav = __('+ LES D&Eacute;P&Ecirc;CHES PR&Eacute;C&Eacute;DENTES', 'afp-feeder');
 		}
 		?>
-		<div id="afpfw-container" class="afpfw-container">
-			<p>Le direct <img src='' alt='AFP' /></p>
-			<div id="afpfw-content" class="afpfw-content" <?php echo $afpf_content_height?>>
+		<div class="box-afp margin-t-40 box--padded b-white">
+			<h3 class="box-afp__header heading-4"><a href="#"><span class="c-afp">Le direct 
+						<i class="icon icon-afp size30"></i></span></a></h3>
 				<?php $this->afpfw_get_page(); ?>
-			</div>
+			</ul>
 
 		</div>
-		<a href=<?php echo get_post_type_archive_link( 'afpfeed' ); ?> id="afpfw-more" class="afpfw-nav" value="1">
-				<?php _e('+ TOUTES LES D&Eacute;P&Ecirc;CHES') ?>
-		</a>
 
 		<?php
 	}
@@ -103,18 +101,14 @@ class AFP_Feeder_widget extends WP_Widget {
         <input id="<?php echo $this->get_field_id( 'afpf_per_page' ); ?>" name="<?php echo $this->get_field_name( 'afpf_per_page' ); ?>" 
 			   type="text" value="<?php echo  $afpf_per_page; ?>" size="2" maxlength="10"/>
     </p>
-		<p>
-        <label for="<?php echo $this->get_field_name( 'afpf_content_height' ); ?>"><?php _e( 'Hauteur du bloc de contenu <br /> (ex "400px", "100%") :', 'afp-feeder' ); ?></label>
-        <input id="<?php echo $this->get_field_id( 'afpf_content_height' ); ?>" name="<?php echo $this->get_field_name( 'afpf_content_height' ); ?>" 
-			   type="text" value="<?php echo  $afpf_content_height; ?>" size="5" />
-    </p>
+
 	<p><?php _e('Mode de navigation :', 'afp-feeder'); ?></p>
 	<p><label for="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>"><?php _e( 'Page d\'archives', 'afp-feeder' ); ?></label>
-	<input type="radio" id="<?php echo $this->get_field_id( 'afpf_nav_mode' ); ?>" 
-		   name="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>" value="archives" <?php echo $archive_status; ?>/>
-	<label for="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>"><?php _e( 'Ajax', 'afp-feeder' ); ?></label>
-	<input type="radio" id="<?php echo $this->get_field_id( 'afpf_nav_mode' ); ?>" 
-		   name="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>" value="ajax" <?php echo $ajax_status; ?>/>
+		<input type="radio" id="<?php echo $this->get_field_id( 'afpf_nav_mode' ); ?>" 
+			   name="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>" value="archives" <?php echo $archive_status; ?>/>
+		<label for="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>"><?php _e( 'Ajax', 'afp-feeder' ); ?></label>
+		<input type="radio" id="<?php echo $this->get_field_id( 'afpf_nav_mode' ); ?>" 
+			   name="<?php echo $this->get_field_name( 'afpf_nav_mode' ); ?>" value="ajax" <?php echo $ajax_status; ?>/>
 	</p>
     <?php
 	

@@ -1,11 +1,1 @@
-.afpfw-container {
-    position: relative; 
-}
-
-.afpfw-content{
-    overflow: auto;
-}
-
-.afpfw-nav {
-    position: absolute;
-}
+.box-afp{position:relative;}.list-afp{overflow:auto;}
