@@ -28,17 +28,15 @@ class AFP_Feeder_widget extends WP_Widget {
 			'paged'			=> $afpfw_paged,
 		);
 		$afpf_query = new WP_Query( $params ); ?>
-		<ul class="list-afp">
 		<?php if ( $afpf_query->have_posts() ) : ?>
-				<?php while ( $afpf_query->have_posts() ) : ?>
-					<?php $afpf_query->the_post(); ?>
-					<li class="list-afp__item">
-						<a href="<?php the_permalink() ?>" class="text-13 c-black"><strong><?php the_time( 'H:i') ?></strong>
-						<?php the_title() ?></a>
-					</li>
-				<?php endwhile; ?>
-			<?php endif; ?>
-		</ul>
+			<?php while ( $afpf_query->have_posts() ) : ?>
+				<?php $afpf_query->the_post(); ?>
+				<li class="list-afp__item">
+					<a href="<?php the_permalink() ?>" class="text-13 c-black"><strong><?php the_time( 'H:i') ?></strong>
+					<?php the_title() ?></a>
+				</li>
+			<?php endwhile; ?>
+		<?php endif; ?>
 		<?php if (isset($_GET['afpfw_ajax'])) {
 			die();
 		}
@@ -52,28 +50,27 @@ class AFP_Feeder_widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		
-		$this->max_per_page = isset($instance['afpf_per_page']) ? $instance['afpf_per_page'] : 7;
+		$this->max_per_page = isset($instance['afpf_per_page']) ? $instance['afpf_per_page'] : 5;
 		$this->nav_mode = isset($instance['afpf_nav_mode']) ? $instance['afpf_nav_mode'] : 'archives';
 		$afpfw_total_pages = ceil( wp_count_posts( 'afpfeed' )->publish / $this->max_per_page );
 		
-		wp_enqueue_style( 'afpfw-script', AFP_FEEDER_URL . '/includes/afp-feeder-widget-style.css');
-		
-		$afpfw_nav = __('+ TOUTES LES D&Eactue;P&Ecirc;CHES', 'afp-feeder');
-				
+		wp_enqueue_style( 'afpfw-script', AFP_FEEDER_URL . '/assets/css/widget-style.css');
+						
 		if ( 'ajax' === $this->nav_mode ) {
-			wp_enqueue_script( 'afpfw-script', AFP_FEEDER_URL . '/includes/afp-feeder-widget-script.js', array(), 1.0, true );
+			wp_enqueue_script( 'afpfw-script', AFP_FEEDER_URL . '/assets/js/widget-script.js', array(), 1.0, true );
 			wp_localize_script('afpfw-script', 'afpfw_vars', array(
 				'afpfw_max_per_page'	=> $this->max_per_page,
 				'afpfw_total_pages'		=> $afpfw_total_pages,
 				'ajaxurl'				=> admin_url('admin-ajax.php'),
 				) );
-			$afpfw_nav = __('+ LES D&Eacute;P&Ecirc;CHES PR&Eacute;C&Eacute;DENTES', 'afp-feeder');
 		}
 		?>
 		<div class="box-afp margin-t-40 box--padded b-white">
-			<h3 class="box-afp__header heading-4"><a href="#"><span class="c-afp">Le direct 
+			<h3 class="box-afp__header heading-4"><a href="<?php echo get_post_type_archive_link('afpfeed'); ?>"><span class="c-afp">Le direct 
 						<i class="icon icon-afp size30"></i></span></a></h3>
-				<?php $this->afpfw_get_page(); ?>
+				<ul class="list-afp">
+					<?php $this->afpfw_get_page(); ?>
+				</ul>
 			</ul>
 
 		</div>
@@ -89,7 +86,6 @@ class AFP_Feeder_widget extends WP_Widget {
 		$archive_status = $ajax_status = '';
 		
 		$afpf_per_page = (!empty($instance['afpf_per_page'])) ? ($instance['afpf_per_page']) : '';
-		$afpf_content_height = (!empty($instance['afpf_content_height'])) ? ($instance['afpf_content_height']) : '';
 		$afpf_nav_mode = (!empty($instance['afpf_nav_mode'])) ? ($instance['afpf_nav_mode']) : '';
 		
 		// Default -> archives

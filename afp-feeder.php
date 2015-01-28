@@ -1,11 +1,10 @@
 <?php
 
 /*
-  Plugin Name: AFP Feeder
-  Author: Thibault Rivrain
+  Plugin Name: Import AFP
   Description: Import ponctuel et automatique des dêpeches AFP dans le cadre de l'offre AFP Texte/FTP.
   License: GPL version 3 or later - http://www.gnu.org/licenses/old-licenses/gpl-3.0.html
-  Version: b0.1
+  Version: 1
  */
 
 define( 'AFP_FEEDER_PATH', plugin_dir_path( __FILE__ ) );
@@ -36,7 +35,7 @@ if ( !function_exists( 'wp_create_categories' ) )
 	require_once( dirname( __FILE__ ) . '/../../../wp-admin/includes/taxonomy.php' );
 
 /**
- * AFP Feeder
+ * Import AFP
  * 
  * TODO:
  * - erreurs champs obligatoires
@@ -75,7 +74,7 @@ if ( class_exists( 'WP_Importer' ) ) {
 		}
 
 		/**
-		 * Assigne aux propriétées options de l'instance AFP Feeder les valeurs actuellement sauvegardées dans la base de données
+		 * Assigne aux propriétées options de l'instance Import AFP les valeurs actuellement sauvegardées dans la base de données
 		 */
 		function get_saved_options() {
 			$options = get_option( 'afpf_general_settings' );
@@ -321,5 +320,5 @@ if ( class_exists( 'WP_Importer' ) ) {
 
 	$afp_feed_import = new AFP_Feeder();
 
-	register_importer( 'afpfeeder', __( 'AFP Feeder', 'afp-feeder' ), __( "Importe des posts pour l'offre AFP texte/FTP.", 'afp-feeder' ), array( $afp_feed_import, 'dispatch' ) );
+	register_importer( 'afpfeeder', __( 'Import AFP', 'afp-feeder' ), __( "Importe des posts pour l'offre AFP texte/FTP.", 'afp-feeder' ), array( $afp_feed_import, 'dispatch' ) );
 } // class_exists( 'WP_Importer' )

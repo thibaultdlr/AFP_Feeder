@@ -20,9 +20,9 @@ class AFP_Feeder_admin {
 	}
 	
 	function add_admin_menu() {
-		add_menu_page('AFP Feeder', 'AFP Feeder', 'edit_posts', 'afpfeeder');
+		add_menu_page('Import AFP', 'Import AFP', 'edit_posts', 'afpfeeder');
 		// Sous menu 'Dêpeches' déclaré lors de register_afpfeed_type() dans afp-feeder.php
-		add_submenu_page ('afpfeeder', 'AFP Feeder', 'Options', 'manage_options', 'afp-feeder', array($this, 'afpfeeder_option_page'));
+		add_submenu_page ('afpfeeder', 'Import AFP', 'Options', 'manage_options', 'afp-feeder', array($this, 'afpfeeder_option_page'));
 	}
 
 	/**
@@ -30,8 +30,8 @@ class AFP_Feeder_admin {
 	 * Ne sont chargés que si la requete http comporte 'afp-feeder'.
 	 */
 	function afpf_wptuts_script() {
-		wp_register_style( 'afpf-style', AFP_FEEDER_URL . 'includes/afp-feeder-admin-style.css' );
-		wp_register_script( 'afpf-script', AFP_FEEDER_URL . '/includes/afp-feeder-admin-script.js', array(), 1.0, true );
+		wp_register_style( 'afpf-style', AFP_FEEDER_URL . '/assets/css/admin-style.css' );
+		wp_register_script( 'afpf-script', AFP_FEEDER_URL . '/assets/js/admin-script.js', array(), 1.0, true );
 		if ( preg_match('#afp-feeder#', urlencode( $_SERVER['REQUEST_URI'] ) ) ) {
 			wp_enqueue_style( 'afpf-style' );
 			wp_enqueue_script('afpf-script' );
@@ -154,7 +154,7 @@ class AFP_Feeder_admin {
 		if ( $transient = get_transient('settings_error') ) var_dump ( $transient );
 		settings_errors( 'afpf_general_settings' ); ?>
 		<div class="wrap" id="afpfwrap">
-		<h2><?php _e( 'AFP Feeder') ?></h2>
+		<h2><?php _e( 'Import AFP') ?></h2>
 		<div id="afpf-admin" class="narrow">
 		<p><?php _e( "Ce module d'import vous permet d'importer les fichiers xml de d&eacute;p&ecirc;ches fournis "
 				. "par l'AFP (Agence France Presse) dans le cadre de l'offre AFP Texte avec d&eacute;pot FTP. "
