@@ -42,6 +42,7 @@ class AFP_Feeder_admin {
 	 * Contrôleur des options
 	 */
 	function handle_options() {
+		$options = false;
 		$updated = 'true';
 		$importing = 'false';
 		$msg = 'Options enregistr&eacute;es.';
@@ -86,8 +87,7 @@ class AFP_Feeder_admin {
 			}
 		}
 
-
-		if ($options) {
+		if ( $options ) {
 			update_option('afpf_general_settings', $options);
 		}
 		
