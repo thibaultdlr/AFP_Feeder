@@ -43,6 +43,7 @@ class AFP_Feeder_admin {
 	 */
 	function handle_options() {
 		$updated = 'true';
+		$importing = 'false';
 		$msg = 'Options enregistr&eacute;es.';
 		$msgtype = 'updated';
 		
@@ -84,7 +85,6 @@ class AFP_Feeder_admin {
 				}
 			}
 		}
-		$urlparam['updated'] = $updated;
 
 
 		if ($options) {
@@ -92,14 +92,12 @@ class AFP_Feeder_admin {
 		}
 		
 		if ( isset( $p['submitandimport'] ) && 'true' === $updated ) {
-			$urlparam['imported'] = 'true';
+			$urlparam['updated'] = $updated;
 			$this->afp_feeder->get_saved_options();
-			$result = $this->afp_feeder->import();
-			if ( is_wp_error( $result ) ) {
-				$wp_err_msg = sprintf( __("Une erreur est utervenue lors de l'import : %s.", 'afp-feeder'), $result->get_error_message() );
-				add_settings_error( 'afpf_general_settings', 'import', __( $wp_err_msg ), 'error' );
-
+			if ( $this->afp_feeder->loadxml_index(true) )  {
+				$importing = 'true';
 			}
+			$urlparam['importing'] = $importing;
 		}
 		
 		add_settings_error( 'afpf_general_settings', 'settings-update', __( $msg ), $msgtype );
@@ -326,14 +324,9 @@ class AFP_Feeder_admin {
 			</div>
 		</form>
 		
-		<?php if ( $report = get_transient( 'afpf_report')) : ?>
+		<?php if ( isset( $_GET['importing'] ) && 'true' === $_GET['importing'] ) : ?>
 			<div id="report">
-				<ul>
-					<?php foreach ($report as $line) : ?>
-						<li><?php echo $line['message']; ?></li>
-					<?php endforeach; ?>
-				</ul>
-			<?php delete_transient('afpf_report'); ?>
+				<?php $this->afp_feeder->import(true); ?>
 			</div>
 		<?php endif; 
 		

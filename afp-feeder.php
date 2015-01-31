@@ -58,6 +58,7 @@ if ( class_exists( 'WP_Importer' ) ) {
 		var $isscheduled;
 		var $recurence;
 		var $last_imported;
+		var $report = array();
 
 		function __construct() {
 
@@ -162,14 +163,12 @@ if ( class_exists( 'WP_Importer' ) ) {
 				return date_format( $date, $outFormat ); // Ou retourne rien et laisse wp publier à la date&heure actuelle
 			}
 		}
-
 		/**
-		 * Charge le contenu de index.xml et stocke le contenu du xml pour chaque depeche dans la tabeau $this->posts
-		 * N'effectue aucune validation ni traitement.
+		 * Load xml index file.
+		 * 
+		 * @param bool $attempt True if only testing so as to set setiing error
 		 */
-		function loadxml() {
-
-			// Verifier si le chemin d'accès est absolu ou rel et assurer qu'il se termine par /
+		function loadxml_index( $attempt = false ) {
 			if ( !preg_match( '#^/#', $this->base_path ) )
 				$this->base_path = get_home_path() . $this->base_path;
 			if ( !preg_match( '#/$#', $this->base_path ) )
@@ -178,15 +177,26 @@ if ( class_exists( 'WP_Importer' ) ) {
 			libxml_use_internal_errors( true );
 			if ( !$feed_index = simplexml_load_file( $this->base_path . 'index.xml' ) ) {
 				if ( libxml_get_errors() ) {
-					$msg = __( "Une erreur est intervenue lors de la r&eacute;cup&eacute;ration du fichier <strong><em>index.xml</em></strong>"
-							. " à l'emplacement : '<strong><em>$this->base_path</em></strong>' .<br />"
-							. "Veuillez v&eacute;rifier le chemin d'acc&egrave;s d&eacute;fini et vous assurer de la pr&eacute;sence du fichier." );
-					add_settings_error( 'afpf_general_settings', 'report-status', __( $msg ), 'error' );
+					if ($attempt) {
+						$msg = __( "Une erreur est intervenue lors de la r&eacute;cup&eacute;ration du fichier <strong><em>index.xml</em></strong>"
+								. " à l'emplacement : '<strong><em>$this->base_path</em></strong>' .<br />"
+								. "Veuillez v&eacute;rifier le chemin d'acc&egrave;s d&eacute;fini et vous assurer de la pr&eacute;sence du fichier." );
+						add_settings_error( 'afpf_general_settings', 'report-status', __( $msg ), 'error' );
+					}
 					libxml_clear_errors();
 					libxml_use_internal_errors( false );
 					return false;					
 				}
 			}
+		}
+
+		/**
+		 * Charge le contenu de index.xml et stocke le contenu du xml pour chaque depeche dans la tabeau $this->posts
+		 * N'effectue aucune validation ni traitement.
+		 */
+		function loadxml_files() {
+
+			$this->loadxml_index();
 			
 			if ( $this->get_last_imported() && ( $this->get_last_imported() > (filemtime( $this->base_path) + ( get_option( 'gmt_offset' ) * 3600 ) ) ) ) {
 				$msg = __( "Il n'y a pas de nouvelles d&eacute;p&ecirc;ches &agrave; importer." );
@@ -204,9 +214,9 @@ if ( class_exists( 'WP_Importer' ) ) {
 				libxml_use_internal_errors( true );
 				if ( !$xmlWire = simplexml_load_file( $this->base_path . $itemRef ) ) {
 					foreach ( libxml_get_errors() as $error ) {
-						$msg = __( "Une erreur est intervenue lors de la r&eacute;cup&eacute;ration du fichier individuel de d&eacute;p&ecirc;che à l'emplacement : "
+						$msg = ( "Une erreur est intervenue lors de la r&eacute;cup&eacute;ration du fichier individuel de d&eacute;p&ecirc;che à l'emplacement : "
 								. "'<strong><em>$this->base_path . $itemRef</em>'</strong>." );
-						add_settings_error( 'afpf_report', 'report-status', __( $msg ), 'failed' );
+						array_push( $this->report, $msg );;
 					}
 					libxml_clear_errors();
 					continue;
@@ -235,9 +245,11 @@ if ( class_exists( 'WP_Importer' ) ) {
 		 */
 		function get_posts() {
 
-			if ( !$this->loadxml() ) {
+			if ($this->loadxml_index()) {
+				$this->loadxml_files(); 
+			} else {
 				return false;
-			} else
+			}
 
 			$index = 0;
 			foreach ( $this->posts as $post ) {
@@ -296,23 +308,25 @@ if ( class_exists( 'WP_Importer' ) ) {
 					}
 					$msg .= __( 'Et voilà !', 'afp-feeder' );
 				}
-				add_settings_error( 'afpf_report', 'import-status', __( $msg ), 'succeeded' );
+				array_push( $this->report, $msg );
 			}
 		}
 
-		function import() {
+		function import($echo = false) {
 			
-
 			if ( $this->get_posts() ) {
 				$result = $this->import_posts();
 				if ( is_wp_error( $result ) )
 					return $result;
 				do_action( 'import_done', 'afpfeeder' );
 				$this->set_last_imported();
-				$msg = __("L'import &agrave; &eacute;t&eacute; effectu&eacute;. "
-						. 'Vous pouvez consulter le rapport <a href="#report">ci dessous</a>.', 'afp-feeder');
-				add_settings_error( 'afpf_general_settings', 'import', __( $msg ), 'updated' );
-
+				if ($echo) {
+					echo '<ul>';
+					foreach ($this->report as $line) {
+						echo '<li>' . $line . '</li>';
+					}
+					echo '</ul>';
+				}
 			}
 		}
 
