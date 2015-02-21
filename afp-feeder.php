@@ -140,6 +140,7 @@ if ( class_exists( 'WP_Importer' ) ) {
 				'show_ui' => true,
 				'show_in_menu' => 'afpfeeder',
 				'show_in_admin_bar' => false,
+                                'show_in_nav_menus' => false,
 				'query_var' => true,
 				'rewrite' => array( 'slug' => __( 'depecheafp', 'afp-feeder' ) ),
 				'capability_type' => 'post',

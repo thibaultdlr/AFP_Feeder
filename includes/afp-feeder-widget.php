@@ -66,8 +66,8 @@ class AFP_Feeder_widget extends WP_Widget {
 		}
 		?>
 		<div class="box-afp margin-t-40 box--padded b-white">
-			<h3 class="box-afp__header heading-4"><a href="<?php echo get_post_type_archive_link('afpfeed'); ?>"><span class="c-afp">Le direct 
-						<i class="icon icon-afp size30"></i></span></a></h3>
+			<div class="box-afp__header heading-4"><a href="<?php echo get_post_type_archive_link('afpfeed'); ?>"><span class="c-afp">Le direct 
+						<i class="icon icon-afp size30"></i></span></a></div>
 				<ul class="list-afp">
 					<?php $this->afpfw_get_page(); ?>
 				</ul>
